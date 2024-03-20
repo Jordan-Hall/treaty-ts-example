@@ -1,9 +1,7 @@
 import { defineConfig } from 'vite';
 import { angular } from './tools/vite/angular';
-import { AngularRoutingPlugin } from './tools/vite/routing';
 import { AngularTemplate } from './tools/vite/sfc/treaty';
 import { splitVendorChunkPlugin } from 'vite';
-import {devServer} from './tools/vite/elysia/dev-server'
 
 
 export default defineConfig({
@@ -12,12 +10,6 @@ export default defineConfig({
     },
     plugins: [
         AngularTemplate(),
-        devServer({
-            entry: './server.ts',
-        }),
-        AngularRoutingPlugin({
-            redirectTo: 'post/1'
-        }),
         angular(),
         splitVendorChunkPlugin()
     ],

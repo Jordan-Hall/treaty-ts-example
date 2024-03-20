@@ -1,9 +1,4 @@
-import { RoutingMeta } from '../../../../tools/vite/routing';
-
-export const routerMeta: RoutingMeta = {
-	title: 'treaty file example'
-}
-
+import { signal, input } from '@angular/core';
 
 <style>
   h1 {
@@ -12,10 +7,13 @@ export const routerMeta: RoutingMeta = {
 	}
 </style>
 const counter = signal(0);
-<h1>{{ counter() }}</h1>
+const val = input('Counter');
+<h1>{{ val() }} {{ counter() }}</h1>
 
 
 function increase() {
+	val()
+	debugger;
 	counter.update(v => v + 1);
 }
 

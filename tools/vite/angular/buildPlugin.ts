@@ -117,7 +117,7 @@ const BuildPlugin = (): Plugin[] => {
           return;
         }
 
-        if (/\.[cm]?tsx?$/.test(id)) {
+        if (/\.[cm]?ts?$/.test(id)) {
           const result = await fileEmitter!(id);
           const data = result?.code ?? '';
           const forceAsyncTransformation =

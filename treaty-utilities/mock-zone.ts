@@ -1,15 +1,15 @@
-if (typeof (globalThis as any).Zone === 'undefined') {
+if (typeof (globalThis).Zone === 'undefined') {
     const mockZone = {
       current: {
-        get: (key: string): boolean | undefined =>
+        get: (key) =>
           key === 'isAngularZone' ? true : undefined,
-        run<T>(fn: (...args: any[]) => T, applyThis?: any, applyArgs?: any): T {
+        run(fn, applyThis, applyArgs){
           return fn.apply(applyThis, applyArgs);
         },
       },
-      run<T>(fn: (...args: any[]) => T, applyThis?: any, applyArgs?: any): T {
+      run(fn, applyThis, applyArgs) {
         return fn.apply(applyThis, applyArgs);
       },
     };
-    (globalThis as any).Zone = mockZone;
+    (globalThis).Zone = mockZone;
   }

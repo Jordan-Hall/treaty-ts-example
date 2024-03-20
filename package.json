@@ -3,12 +3,8 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "ng": "ng",
-    "start": "bunx --bun vite build --watch & bun run --watch server.ts",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "dev": "bunx --bun vite dev",
-    "viteBuild": "bunx --bun vite build"
+    "dev": "vite dev",
+    "viteBuild": "vite build"
   },
   "dependencies": {
     "@angular/animations": "^17.2.1",
@@ -35,7 +31,7 @@
     "@babel/core": "^7.23.9",
     "@chialab/esbuild-plugin-html": "^0.18.0",
     "@happy-dom/global-registrator": "^13.3.8",
-    "@swc/core": "^1.4.1",
+    "@swc/core": "1.4.1",
     "@types/babel__core": "^7.20.5",
     "@types/bun": "^1.0.5",
     "minimatch": "^9.0.3",

@@ -125,7 +125,9 @@ export function NgPrinter(ng: typeof import('@angular/compiler')) {
 			context: Context
 		): string {
 			const fn = ast.fn.visitExpression(this, context);
-			const args = ast.args.map((arg) => arg.visitExpression(this, context));
+			const args = ast.args.map((arg) => {
+				return arg.visitExpression(this, context)
+			});
 			return this.setSourceMapRange(
 
 				`${fn}(${args.join(', ')})`,
