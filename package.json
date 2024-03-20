@@ -31,7 +31,7 @@
     "@babel/core": "^7.23.9",
     "@chialab/esbuild-plugin-html": "^0.18.0",
     "@happy-dom/global-registrator": "^13.3.8",
-    "@swc/core": "^1.4.1",
+    "@swc/core": "1.4.1",
     "@types/babel__core": "^7.20.5",
     "@types/bun": "^1.0.5",
     "minimatch": "^9.0.3",
