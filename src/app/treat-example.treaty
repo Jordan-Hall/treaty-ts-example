@@ -7,11 +7,13 @@ import { signal, input } from '@angular/core';
 	}
 </style>
 const counter = signal(0);
-const label = input('Counter');
-<h1>{{ label }} {{ counter() }}</h1>
+const val = input('Counter');
+<h1>{{ val() }} {{ counter() }}</h1>
 
 
 function increase() {
+	val()
+	debugger;
 	counter.update(v => v + 1);
 }
 

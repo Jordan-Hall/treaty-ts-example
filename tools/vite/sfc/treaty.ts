@@ -1,3 +1,4 @@
+import { R3InputMetadata } from '@angular/compiler';
 import { NgPrinter } from './ng-printer'
 import { basename, dirname, extname } from 'path';
 import type { Plugin } from 'vite';
@@ -15,10 +16,10 @@ function extractFileName(filePath: string) {
 
   const lastFolderName = basename(dirPath);
 
-  if (lastFolderName !== "pages") {
+  // if (lastFolderName !== "pages") {
 
-    return `${lastFolderName}-${fileName}`;
-  }
+  //   return `${lastFolderName}-${fileName}`;
+  // }
 
   return fileName;
 }
@@ -146,6 +147,50 @@ function replaceSpreadWithBindings(htmlStrings: string[], objectName: string, ke
   });
 }
 
+function findInputAndOutputAssignments(code) {
+  // Check for 'input' and 'output' imports
+  const importCheck = /import\s+{[^}]*\b(input|output)\b[^}]*}\s+from\s+['"]@angular\/core['"]/;
+  const hasImport = importCheck.test(code);
+
+  if (!hasImport) {
+    return { inputs: {}, outputs: {}}; // Exit if necessary imports are not found
+  }
+
+  // Regex pattern to match 'input()', 'input.required()', and 'output()' with arguments
+  const pattern = /(?:let|const)\s+(\w+)\s*=\s*(input(?:\.required)?|output)\(([^)]*)\)/g;
+
+  const assignments = {
+    inputs: {} as {
+      [field: string]: R3InputMetadata;
+    },
+    outputs: {} as {
+      [field: string]: string;
+    }
+  };
+
+  let match;
+  while ((match = pattern.exec(code)) !== null) {
+    const [_, variableName, functionName, functionArguments] = match;
+    const isRequired = functionName.includes('.required');
+
+    if (functionName.startsWith('input')) {
+      assignments.inputs[variableName] = {
+        transformFunction: null,
+        classPropertyName: variableName,
+        bindingPropertyName: variableName,
+        required: isRequired,
+        isSignal: true
+      };
+    } else if (functionName === 'output') {
+      assignments.outputs[variableName] = variableName;
+    }
+  }
+
+  return assignments;
+}
+
+
+
 export const AngularTemplate: () => Plugin = () => {
   let compiler: typeof import('@angular/compiler');
   let ngPrint: ReturnType<typeof NgPrinter>
@@ -210,7 +255,7 @@ export const AngularTemplate: () => Plugin = () => {
         });
 
         const fileName = extractFileName(id);
-        const selector = `${toHyphenCase(fileName)} ${toCamelCase(fileName)} ${toPascalCase(fileName)}`
+        const selector = `${toHyphenCase(fileName)}, ${toCamelCase(fileName)}, ${toPascalCase(fileName)}`
 
         let updatedHtmlStrings = [...htmlContent];
         const spreadPattern = /\.\.\.(\w+)\s*}/;
@@ -232,6 +277,10 @@ export const AngularTemplate: () => Plugin = () => {
         console.log('angularTemplate:');
         console.log(angularTemplate);
 
+        console.log(selector);
+
+        const { inputs, outputs } = findInputAndOutputAssignments(jsTsContent)
+
         const constantPool = new compiler.ConstantPool();
         const out = compiler.compileComponentFromMetadata(
           {
@@ -245,8 +294,8 @@ export const AngularTemplate: () => Plugin = () => {
               specialAttributes: {},
               useTemplatePipeline: true,
             },
-            inputs: {},
-            outputs: {},
+            inputs,
+            outputs: outputs,
             lifecycle: {
               usesOnChanges: false,
             },
@@ -298,7 +347,7 @@ export const AngularTemplate: () => Plugin = () => {
         console.log(treatyIvy);
         return treatyIvy;
       }
-
+      console.log(code);
       return code;
     },
   };
